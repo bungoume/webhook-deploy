@@ -5,6 +5,8 @@ from jsonfield import JSONField
 class Repository(models.Model):
     # github, gitbucket, etc...
     hub = models.CharField(max_length=191, db_index=True)
+    # user
+    user = models.CharField(max_length=191)
     # repository_name
     name = models.CharField(max_length=191)
     # username/reponame
