@@ -5,6 +5,7 @@ import pytz
 from datetime import datetime
 
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from core import models
 
@@ -42,6 +43,7 @@ def create_request_dict(request):
     return res
 
 
+@csrf_exempt
 def webhook_github(request):
     models.HookLog.objects.create(data=create_request_dict(request))
 
