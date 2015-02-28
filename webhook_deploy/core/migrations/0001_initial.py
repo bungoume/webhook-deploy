@@ -14,8 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DeployLog',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
                 ('log', models.TextField()),
+                ('return_code', models.IntegerField()),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={
             },
@@ -24,7 +26,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DeploySetting',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
                 ('branch', models.CharField(max_length=191)),
                 ('command', models.TextField()),
             ],
@@ -35,9 +37,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HookLog',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
                 ('data', jsonfield.fields.JSONField()),
-                ('created_at', models.DateTimeField(verbose_name='レコード作成日時', auto_now_add=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={
             },
@@ -46,12 +48,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Repository',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('hub', models.CharField(max_length=191, db_index=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('hub', models.CharField(db_index=True, max_length=191)),
                 ('user', models.CharField(max_length=191)),
                 ('name', models.CharField(max_length=191)),
-                ('full_name', models.CharField(max_length=191, db_index=True)),
-                ('secret', models.CharField(max_length=191, db_index=True)),
+                ('full_name', models.CharField(db_index=True, max_length=191)),
+                ('secret', models.CharField(db_index=True, max_length=191)),
             ],
             options={
             },
