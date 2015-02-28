@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from jsonfield import JSONField
 
 
@@ -32,7 +33,8 @@ class HookLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {}'.format(self.created_at, self.data.get('path'))
+        dt_text = timezone.localtime(self.created_at).strftime('%Y-%m-%d %H:%M:%S')
+        return '{}: {}'.format(dt_text, self.data.get('path'))
 
 
 class DeployLog(models.Model):
@@ -41,4 +43,5 @@ class DeployLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '{}: {}'.format(self.created_at, self.return_code)
+        dt_text = timezone.localtime(self.created_at).strftime('%Y-%m-%d %H:%M:%S')
+        return '{}: {}'.format(dt_text, self.return_code)
