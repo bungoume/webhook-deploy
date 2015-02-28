@@ -59,10 +59,10 @@ def webhook_github(request):
     try:
         body_json = json.loads(body)
     except:
-        body_json = {}
+        return JsonResponse({'error': 'cannot decode body like json'})
 
-    if event == 'push':
-        github_push(request, body_json)
+    if event == 'push' or True:
+        ret = github_push(request, body_json)
 
     if event == 'release':
         github_release(request, body_json)
@@ -70,24 +70,34 @@ def webhook_github(request):
     if event == 'deployment_status':
         pass
 
-    return JsonResponse({})
+    return JsonResponse(ret)
 
 
 def github_push(request, payload):
     try:
         repo_fullname = payload['repository']['full_name']
     except:
-        return
-    repo = models.Repository.objects.get(hub='github', fullname=repo_fullname)
+        return {'error': 'payload repo_fullname'}
+    try:
+        repo = models.Repository.objects.get(hub='github', full_name=repo_fullname)
+    except models.Repository.DoesNotExist:
+        return {'error': 'repository not exist'}
     branch = payload.get('ref').replace('refs/heads/', '')
 
-    deploy_settings = repo.deploy_setting_set.filter(branch=branch)
+    deploy_settings = repo.deploysetting_set.filter(branch=branch)
+    if not deploy_settings:
+        return {'error': 'no deploy settings'}
+
+    ret = []
     for deploy in deploy_settings:
         try:
             log = subprocess.check_output(['ls', '-l'])
-            models.DeployLog.objects.create(log=log)
+            command = 'ls -l'
+            models.DeployLog.objects.create(log=log, return_code=0)
+            ret.append({'command': command, 'log': log.decode('utf-8')})
         except subprocess.CalledProcessError as e:
             print(e)
+    return {'data': ret}
 
 
 def github_release(request, payload):
