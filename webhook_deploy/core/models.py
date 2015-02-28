@@ -22,7 +22,8 @@ class DeploySetting(models.Model):
 
 
 class HookLog(models.Model):
-    body = JSONField()
+    data = JSONField()
+    created_at = models.DateTimeField("レコード作成日時", auto_now_add=True)
 
 
 class DeployLog(models.Model):
