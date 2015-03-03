@@ -1,6 +1,6 @@
 import json
-import io
 import subprocess
+# import time
 import pytz
 from datetime import datetime
 
@@ -88,16 +88,20 @@ def github_push(request, payload):
     if not deploy_settings:
         return {'error': 'no deploy settings'}
 
-    ret = []
     for deploy in deploy_settings:
-        try:
-            log = subprocess.check_output(['ls', '-l'])
-            command = 'ls -l'
-            models.DeployLog.objects.create(log=log, return_code=0)
-            ret.append({'command': command, 'log': log.decode('utf-8')})
-        except subprocess.CalledProcessError as e:
-            print(e)
-    return {'data': ret}
+        exec_command(deploy)
+    return {'data': ''}
+
+
+def exec_command(request):
+    try:
+        cmd = ['ls']
+        p1 = subprocess.Popen(cmd)
+        output, err = p1.communicate()
+        models.DeployLog.objects.create(log=output, return_code=p1.returncode)
+        # ret.append({'command': command, 'log': log.decode('utf-8')})
+    except subprocess.CalledProcessError as e:
+        print(e)
 
 
 def github_release(request, payload):
