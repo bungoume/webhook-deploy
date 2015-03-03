@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import json
 import shlex
 import subprocess
@@ -12,6 +14,14 @@ from django.views.decorators.csrf import csrf_exempt
 from core import models
 
 jst = pytz.timezone('Asia/Tokyo')
+
+
+def _verify_signature(self, client_secret, raw_response, x_hub_signature):
+    digest = hmac.new(client_secret.encode('utf-8'),
+                      msg=raw_response.encode('utf-8'),
+                      digestmod=hashlib.sha1
+                      ).hexdigest()
+    return digest == x_hub_signature
 
 
 def create_request_dict(request):
@@ -82,7 +92,7 @@ def github_push(request, payload):
 
     # X-Hub-Signature
     signature = request.META.get('HTTP_X_HUB_SIGNATURE')
-    if not repo.secret == signature:
+    if not _verify_signature(repo.secret, request.body, signature):
         return {'error': 'incorrect signature'}
 
     # X-Github-Delivery
