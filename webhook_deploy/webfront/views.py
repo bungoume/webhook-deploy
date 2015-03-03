@@ -21,7 +21,7 @@ def _verify_signature(self, client_secret, raw_response, x_hub_signature):
                       msg=raw_response.encode('utf-8'),
                       digestmod=hashlib.sha1
                       ).hexdigest()
-    return digest == x_hub_signature
+    return 'sha1={}'.format(digest) == x_hub_signature
 
 
 def create_request_dict(request):
@@ -33,7 +33,7 @@ def create_request_dict(request):
         if k.startswith(('HTTP_', 'REMOTE_')):
             meta[k.lower()] = v
 
-    res = {
+    req = {
         'datetime': datetime.now(jst).isoformat(),
         'get': dict(request.GET),
         'post': dict(request.POST),
@@ -48,16 +48,17 @@ def create_request_dict(request):
     # POST bodyがjsonであればシリアライズ結果も返す
     try:
         body_json = json.loads(body)
-        res['body_json'] = body_json
+        req['body_json'] = body_json
     except:
         pass
 
-    return res
+    return req
 
 
 @csrf_exempt
 def webhook_github(request):
-    models.HookLog.objects.create(data=create_request_dict(request))
+    req = create_request_dict(request)
+    models.HookLog.objects.create(data=req)
 
     # X-Github-Event
     event = request.META.get('HTTP_X_GITHUB_EVENT')
@@ -92,7 +93,7 @@ def github_push(request, payload):
 
     # X-Hub-Signature
     signature = request.META.get('HTTP_X_HUB_SIGNATURE')
-    if not _verify_signature(repo.secret, request.body, signature):
+    if not _verify_signature(repo.secret, request.body.decode('utf-8'), signature):
         return {'error': 'incorrect signature'}
 
     # X-Github-Delivery
