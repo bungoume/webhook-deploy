@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     # Third-party applications
 
     # Project applications
+    'core',
+    'webfront',
 )
 
 MIDDLEWARE_CLASSES = (
