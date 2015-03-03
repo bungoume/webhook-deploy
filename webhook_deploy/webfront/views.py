@@ -16,7 +16,7 @@ from core import models
 jst = pytz.timezone('Asia/Tokyo')
 
 
-def _verify_signature(self, client_secret, raw_response, x_hub_signature):
+def _verify_signature(client_secret, raw_response, x_hub_signature):
     digest = hmac.new(client_secret.encode('utf-8'),
                       msg=raw_response.encode('utf-8'),
                       digestmod=hashlib.sha1
