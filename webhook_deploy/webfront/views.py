@@ -1,5 +1,7 @@
 import json
+import shlex
 import subprocess
+import threading
 # import time
 import pytz
 from datetime import datetime
@@ -49,11 +51,6 @@ def webhook_github(request):
 
     # X-Github-Event
     event = request.META.get('HTTP_X_GITHUB_EVENT')
-    # X-Hub-Signature
-    # signature = request.META.get('HTTP_X_HUB_SIGNATURE')
-    # X-Github-Delivery
-    # delivery = request.META.get('HTTP_X_GITHUB_DELIVERY')
-
     body = request.body.decode('utf-8')
 
     try:
@@ -82,6 +79,15 @@ def github_push(request, payload):
         repo = models.Repository.objects.get(hub='github', full_name=repo_fullname)
     except models.Repository.DoesNotExist:
         return {'error': 'repository not exist'}
+
+    # X-Hub-Signature
+    signature = request.META.get('HTTP_X_HUB_SIGNATURE')
+    if not repo.secret == signature:
+        return {'error': 'incorrect signature'}
+
+    # X-Github-Delivery
+    # delivery = request.META.get('HTTP_X_GITHUB_DELIVERY')
+
     branch = payload.get('ref').replace('refs/heads/', '')
 
     deploy_settings = repo.deploysetting_set.filter(branch=branch)
@@ -93,15 +99,20 @@ def github_push(request, payload):
     return {'data': ''}
 
 
-def exec_command(request):
-    try:
-        cmd = ['ls']
-        p1 = subprocess.Popen(cmd)
-        output, err = p1.communicate()
-        models.DeployLog.objects.create(log=output, return_code=p1.returncode)
-        # ret.append({'command': command, 'log': log.decode('utf-8')})
-    except subprocess.CalledProcessError as e:
-        print(e)
+def update_log(p1):
+    output, err = p1.communicate()
+    models.DeployLog.objects.create(log=output, return_code=p1.returncode)
+    # ret.append({'command': command, 'log': log.decode('utf-8')})
+
+
+def exec_command(deploy):
+    cmd = ['ansible-playbook']
+    cmd.extend(shlex.split(deploy.command))
+    p1 = subprocess.Popen(cmd)
+    t = threading.Thread(target=update_log, args=(p1,))
+    # t.setDaemon(True)
+    t.start()
+    # t.join()
 
 
 def github_release(request, payload):
