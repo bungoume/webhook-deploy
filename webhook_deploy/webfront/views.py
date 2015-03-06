@@ -119,11 +119,14 @@ def update_log(p1):
 def exec_command(deploy):
     cmd = ['ansible-playbook']
     cmd.extend(shlex.split(deploy.command))
-    p1 = subprocess.Popen(cmd)
-    t = threading.Thread(target=update_log, args=(p1,))
-    # t.setDaemon(True)
-    t.start()
-    # t.join()
+    try:
+        p1 = subprocess.Popen(cmd)
+        t = threading.Thread(target=update_log, args=(p1,))
+        # t.setDaemon(True)
+        t.start()
+        # t.join()
+    except:
+        pass
 
 
 def github_release(request, payload):
