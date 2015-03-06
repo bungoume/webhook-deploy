@@ -8,7 +8,8 @@ RUN pip install uWSGI
 RUN \
   apt-get update -qq && \
   apt-get install -qq python python-dev && \
-  python2 https://bootstrap.pypa.io/get-pip.py && \
+  curl -O https://bootstrap.pypa.io/get-pip.py && \
+  python2 get-pip.py && \
   pip2 install ansible
 
 COPY requirements.txt /usr/src/app/
