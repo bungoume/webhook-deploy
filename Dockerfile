@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 RUN pip install uWSGI
 
 RUN \
-  apt-get -y install python python-dev ansible && \
+  apt-get update -qq && \
+  apt-get install -qq python python-dev && \
   python2 https://bootstrap.pypa.io/get-pip.py && \
   pip2 install ansible
 
