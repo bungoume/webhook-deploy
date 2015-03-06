@@ -1,16 +1,20 @@
-FROM python:3.4.3
+FROM python:3.4.2
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 RUN pip install uWSGI
-RUN pip2 install ansible
+
+RUN \
+  apt-get -y install python python-dev ansible && \
+  python2 https://bootstrap.pypa.io/get-pip.py && \
+  pip2 install ansible
 
 COPY requirements.txt /usr/src/app/
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY . /usr/src/app
 
-RUN python webhook_deploy/manage.py collectstatic --noinput
+RUN python3 webhook_deploy/manage.py collectstatic --noinput
 
 CMD ["uwsgi", "uwsgi.ini"]
