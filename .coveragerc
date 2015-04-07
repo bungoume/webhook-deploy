@@ -1,0 +1,5 @@
+[report]
+include = text_analysis/**
+omit =
+    text_analysis/*/tests/**
+    text_analysis/*/tests.py
