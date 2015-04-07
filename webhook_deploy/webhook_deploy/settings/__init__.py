@@ -2,20 +2,20 @@
 Django settings for webhook_deploy project.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
+https://docs.djangoproject.com/en/1.8/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
+https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from os.path import dirname
-BASE_DIR = dirname(dirname(dirname(__file__)))
+BASE_DIR = dirname(dirname(dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&dinct(5v!k=b_ir!%h6pq3kqw9usf^a5t$=q0!d%1!bf%#ljr'
@@ -53,15 +53,32 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'webhook_deploy.urls'
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = 'webhook_deploy.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -71,7 +88,7 @@ DATABASES = {
 }
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+# https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'ja'
 
@@ -85,7 +102,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
+# https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
