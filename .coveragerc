@@ -1,5 +1,5 @@
 [report]
-include = text_analysis/**
+include = webhook_deploy/**
 omit =
-    text_analysis/*/tests/**
-    text_analysis/*/tests.py
+    webhook_deploy/*/tests/**
+    webhook_deploy/*/tests.py
