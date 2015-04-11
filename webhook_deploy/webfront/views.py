@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import json
+import logging
 import shlex
 import subprocess
 import threading
@@ -11,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from core import models
 
+
+logger = logging.getLogger(__name__)
 
 
 def _verify_signature(client_secret, raw_response, x_hub_signature):
@@ -27,6 +30,7 @@ def create_request_dict(request):
     try:
         body = request.body.decode('utf-8')
     except UnicodeDecodeError as e:
+        logger.warn('faild to load body as utf-8. %s', e)
         body = None
 
     for k, v in request.META.items():
@@ -49,8 +53,8 @@ def create_request_dict(request):
     try:
         body_json = json.loads(body)
         req['body_json'] = body_json
-    except:
     except (TypeError, ValueError) as e:
+        logger.debug('faild to load as json. %s', e)
         pass
 
     return req
