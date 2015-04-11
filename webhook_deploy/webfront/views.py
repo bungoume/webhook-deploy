@@ -23,8 +23,11 @@ def _verify_signature(client_secret, raw_response, x_hub_signature):
 
 def create_request_dict(request):
     meta = {}
-    # bodyはrequest.POSTより先に読み出す必要がある
-    body = request.body.decode('utf-8')
+
+    try:
+        body = request.body.decode('utf-8')
+    except UnicodeDecodeError as e:
+        body = None
 
     for k, v in request.META.items():
         if k.startswith(('HTTP_', 'REMOTE_')):
@@ -47,6 +50,7 @@ def create_request_dict(request):
         body_json = json.loads(body)
         req['body_json'] = body_json
     except:
+    except (TypeError, ValueError) as e:
         pass
 
     return req
