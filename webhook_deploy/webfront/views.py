@@ -4,16 +4,13 @@ import json
 import shlex
 import subprocess
 import threading
-# import time
-import pytz
-from datetime import datetime
 
 from django.http import JsonResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from core import models
 
-jst = pytz.timezone('Asia/Tokyo')
 
 
 def _verify_signature(client_secret, raw_response, x_hub_signature):
@@ -34,7 +31,7 @@ def create_request_dict(request):
             meta[k.lower()] = v
 
     req = {
-        'datetime': datetime.now(jst).isoformat(),
+        'datetime': timezone.localtime(timezone.now()).isoformat(),
         'get': dict(request.GET),
         'post': dict(request.POST),
         'body': body,
