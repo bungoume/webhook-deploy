@@ -5,7 +5,6 @@ import dj_database_url
 ALLOWED_HOSTS = ['*']
 
 DEBUG = False
-TEMPLATE_DEBUG = False
 
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True

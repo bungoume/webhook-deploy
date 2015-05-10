@@ -23,8 +23,6 @@ SECRET_KEY = '&dinct(5v!k=b_ir!%h6pq3kqw9usf^a5t$=q0!d%1!bf%#ljr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
