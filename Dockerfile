@@ -21,4 +21,4 @@ COPY . /usr/src/app
 
 RUN python3 webhook_deploy/manage.py collectstatic --noinput
 
-CMD ["uwsgi", "uwsgi.ini"]
+CMD ["uwsgi", "--ini", "uwsgi.ini:production"]
