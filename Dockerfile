@@ -12,7 +12,6 @@ RUN \
   python3 get-pip.py
 
 RUN pip2 install ansible
-RUN pip3 install uWSGI
 
 COPY requirements.txt /usr/src/app/
 RUN pip3 install -r requirements.txt
