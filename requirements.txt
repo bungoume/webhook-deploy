@@ -1,4 +1,4 @@
-Django==1.8.3
+Django==2.2.24
 dj-database-url==0.3.0
 jsonfield==1.0.3
 pytz
